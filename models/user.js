@@ -15,7 +15,7 @@ class User {
   static async register({ username, password, first_name, last_name, phone }) {
     const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
     const result = await db.query(`INSERT INTO users (username, password, first_name, last_name, phone, join_at, last_login_at)
-    VALUES ($1, $2, $3, $4, $5, LOCALTIMESTAMP(0), current_timestamp) RETURNING username, password, first_name, last_name, phone`,
+    VALUES ($1, $2, $3, $4, $5, current_timestamp, current_timestamp) RETURNING username, password, first_name, last_name, phone`,
       [username, hashedPassword, first_name, last_name, phone]);
     return result.rows[0];
   }
@@ -25,7 +25,7 @@ class User {
   static async authenticate(username, password) {
     const result = await db.query(`SELECT password FROM users WHERE username = $1`, [username]);
     const user = result.rows[0];
-    if (!user) throw new ExpressError('No user found', 404);
+    if (!user) throw new ExpressError('No user found', 400);
     return await bcrypt.compare(password, user.password);
   }
 

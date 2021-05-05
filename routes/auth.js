@@ -38,11 +38,8 @@ router.post('/login', async (req, res, next) => {
  */
 router.post('/register', async (req, res, next) => {
     try {
-        const { username, password, first_name, last_name, phone } = req.body;
-        const user = { username, password, first_name, last_name, phone };
-        if (!user) throw new ExpressError('Need to supply username, password, first name, last name, and phone', 400);
-        let result = await User.register(user);
-        let token = jwt.sign(result.username, SECRET_KEY);
+        let { username } = await User.register(req.body);
+        let token = jwt.sign({ username }, SECRET_KEY);
         User.updateLoginTimestamp(username);
         return res.json({ token });
     } catch (e) {
