@@ -1,4 +1,6 @@
-const db = require("../db");
+process.env.NODE_ENV = "test";
+
+const db = require('../db');
 const User = require("../models/user");
 const Message = require("../models/message");
 
@@ -33,7 +35,7 @@ describe("Test User class", function () {
     let isValid = await User.authenticate("test", "password");
     expect(isValid).toBeTruthy();
 
-    isValid =  await User.authenticate("test", "xxx");
+    isValid = await User.authenticate("test", "xxx");
     expect(isValid).toBeFalsy();
   });
 
@@ -136,6 +138,6 @@ describe("Test messages part of User class", function () {
   });
 });
 
-afterAll(async function() {
+afterAll(async function () {
   await db.end();
 });
